@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ 	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<!-- monitoring -->
+   	<bean id="monitoringRouteBuilder" class="kr.co.bizframe.esb.camel.monitoring.MonitoringRouteBuilder"/>
+   	<!-- monitoring -->
+
+ 
+ 	<!--  propertie set -->
+	<bean id="config" class="kr.co.bizframe.exlink.ExlinkConfig">
+		<property name="mapDir">
+			<value>/home/exserver/data/conf</value>
+		</property>
+	</bean>
+	
+	<bean id="jetty" class="org.apache.camel.component.jetty9.JettyHttpComponent9">
+	</bean>
+
+
+ 	<camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+
+            <!-- monitoring -->
+	     <routeBuilder ref="monitoringRouteBuilder"/>				
+            <!-- monitoring -->
+
+	    <route id="exserver_http_receiver">
+		  <from uri="jetty:http://localhost:7777/exlink/"/>
+		  <log message="Header Name : ${in.header.fileName}"/>
+		  <to uri="file:/home/exserver/data/recv?fileName=${in.header.fileName}"/>
+		  <!-- <to uri="file:/home/exserver/data/recv?fileName=/2018${in.header.fileName.substring(5,9)}/${in.header.fileName.substring(1,5)}/RECV/${in.header.fileName}"/> 
+	    	  -->
+	    </route>
+	</camelContext>
+
+ </beans>

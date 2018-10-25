@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+
+<!-- ======================================================================= -->
+<!-- ECM Testbed Build.xml                                                           -->
+<!-- author Ho-Jin Seo														 -->
+<!-- ======================================================================= -->
+
+<project name="camel_custom_components" default="dist" basedir=".">
+	<property environment="env" />
+
+	<property file="./build.properties" />
+
+	<property name="src.dir" value="${basedir}\src\main\java" />
+	<property name="build.dir" value="${basedir}\build" />
+	<property name="resources.dir" value="${basedir}\resources" />
+	<property name="build.classes.dir" value="${build.dir}/classes" />
+	<property name="jar.name" value="camel-exlink-dsl.jar" />
+	<property name="build.deploy.dir" value="${build.dir}\deploy" />
+
+	<!-- =================================================================== -->
+	<!-- Build classpath 													 -->
+	<!-- =================================================================== -->
+	<path id="classpath">
+		<fileset dir="${basedir}\lib">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${basedir}\lib">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement location="${build.classes.dir}" />
+	</path>
+
+	<property name="build.classpath" refid="classpath" />
+
+	<!-- =================================================================== -->
+	<!-- Init the build system                                               -->
+	<!-- =================================================================== -->
+	<target name="init">
+		<echo message="" />
+		<echo message="------------------------------------------------------------------" />
+		<echo message="----- exlink dsl ${product.name} v${product_version} [${year}] -----" />
+		<echo message="------------------------------------------------------------------" />
+		<echo message="Building with ${ant.version}" />
+		<echo message="Java ${java.version} located at ${java.home} " />
+		<echo message="------------------------------------------------------------------" />
+		<echo message="" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Prepares the build directory                                        -->
+	<!-- =================================================================== -->
+	<target name="prepare" depends="init">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.classes.dir}" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Compiles the source code                                            -->
+	<!-- =================================================================== -->
+	<target name="compile" depends="prepare">
+		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="on" encoding="utf-8" deprecation="on" optimize="off" classpath="${build.classpath}">
+			<include name="**/*.java" />
+		</javac>
+		<buildnumber />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Cleans up generated stuff                                           -->
+	<!-- =================================================================== -->
+	<target name="clean">
+		<echo message="delete clean path= ${build.classes.dir}" />
+		<delete>
+			<fileset dir="${build.classes.dir}">
+				<!-- ======================================================= -->
+				<!-- TO SET : List class filenames to delete here 			 -->
+				<!-- ======================================================= -->
+				<include name="**/*.class" />
+			</fileset>
+		</delete>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Copy generated stuff to Server($(dist.dir)) -->
+	<!-- =================================================================== -->
+	<target name="dist" depends="compile">
+		<echo message="SRC-DIR ... ${src.dir}" />
+		<echo message="TO -DIR ... ${build.classes.dir}" />
+		<jar jarfile="${build.deploy.dir}/${jar.name}">
+			<fileset dir="${build.classes.dir}">
+				<include name="**/*.*" />
+			</fileset>
+			<fileset dir="${resources.dir}">
+				<include name="**"/>
+			</fileset>
+		</jar>
+		<copy file="${build.deploy.dir}\${jar.name}" todir="./lib" />
+	</target>
+</project>

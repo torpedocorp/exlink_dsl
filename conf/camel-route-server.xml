@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ 	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+ 
+ 	<!--  propertie set -->
+	<bean id="config" class="kr.co.bizframe.exlink.ExlinkConfig">
+		<property name="mapDir">
+			<value>/home/exlink/exlink_server/applications/exlink_server/conf/mapScript</value>
+		</property>
+		<property name="dsFilename">
+			<value>jdbc_ds_exlink.xml</value>
+		</property>
+	</bean>
+	
+	<bean id="jetty" class="org.apache.camel.component.jetty9.JettyHttpComponent9">
+	</bean>
+
+
+ 	<camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+	    <route>
+		  <from uri="jetty:http://192.168.10.2:7777/exlink/"/>
+		  <log message="Header Name : ${in.header.fileName}"/>
+		  <to uri="file:/home/exlink/data/recv?fileName=/2018${in.header.fileName.substring(5,9)}/${in.header.fileName.substring(1,5)}/RECV/${in.header.fileName}"/> 
+	    </route>
+	    <route>
+		  <from uri="file:/home/exlink/data/recv?recursive=true&amp;maxDepth=4&amp;move=done&amp;moveFailed=fail&amp;readLock=markerFile&amp;delay=2000"/>
+		  <to uri="exlink:recv?fileFormat=json"/>
+	    </route>
+	</camelContext>
+
+ </beans>

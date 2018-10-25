@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+       
+    <bean id="RestletComponent" class="org.restlet.Component"/>
+
+    <bean id="RestletComponentService" class="org.apache.camel.component.restlet.RestletComponent">
+        <constructor-arg ref="RestletComponent" />
+        <property name="maxThreads" value="100" />
+		<property name="port" value="8080" />
+    </bean>
+	<!-- the security handler -->
+	<bean id="securityHandler" class="kr.co.bizframe.exlink.test.rest.JettySecurity"
+		factory-method="createSecurityHandler" />
+<!-- from("restlet:http://0.0.0.0:8080/cars?restletMethods=POST").unmarshal("gson").bean("orderService", "selectCarNo"); -->
+	<camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+		<route id="createUser">
+			<from uri="restlet:http://0.0.0.0:8080/cars?restletMethods=POST" />
+				<unmarshal ref="gson"/>
+		</route>
+	</camelContext>
+
+</beans>

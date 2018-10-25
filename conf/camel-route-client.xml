@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<bean id="jetty" class="org.apache.camel.component.jetty9.JettyHttpComponent9">
+	</bean>
+	
+	<!--  propertie set -->
+	<bean id="config" class="kr.co.bizframe.exlink.ExlinkConfig">
+		<property name="mapDir">
+			<value>/home/exclient/data/conf</value>
+		</property>
+		<property name="dsFilename">
+			<value>jdbc_ds_exclient.xml</value>
+		</property>
+		<property name="sendFileDir">
+			<value>/home/exclient/data/send</value>
+		</property>
+	</bean>
+	<!-- monitoring -->
+	<bean id="monitoringRouteBuilder" class="kr.co.bizframe.esb.camel.monitoring.MonitoringRouteBuilder" />
+	<!-- monitoring -->
+
+	<camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+		<!-- monitoring -->
+		<routeBuilder ref="monitoringRouteBuilder" />
+		<!-- monitoring -->
+
+		<threadPoolProfile id="exPool" poolSize="3" maxPoolSize="8" />
+
+		<route id="exclient_makedata">
+			<from uri="exlink:send?fileFormat=json" />
+			<to uri="log:?level=INFO" />
+		</route>
+		<route id="exlink_senddata">
+			<from
+				uri="file:/home/exclient/data/send?move=done&amp;moveFailed=fail&amp;readLock=markerFile&amp;sortBy=reverse:file:modified&amp;delay=5000" />
+			<setHeader headerName="fileName">
+				<simple>${in.header.CamelFileName}</simple>
+			</setHeader>
+			<threads executorServiceRef="exPool">
+				<to uri="http://localhost:7777/exlink/" />
+			</threads>
+		</route>
+	</camelContext>
+</beans>
+ 

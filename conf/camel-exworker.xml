@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+ <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ 	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+ 
+ 	<!--  propertie set -->
+	<bean id="config" class="kr.co.bizframe.exlink.ExlinkConfig">
+		<property name="mapDir">
+			<value>/home/exserver/data/conf</value>
+		</property>
+		<!--property name="dsFilename">
+			<value>jdbc_ds_exserver.xml</value>
+		</property-->
+	</bean>
+
+	<!-- monitoring -->
+   	<bean id="monitoringRouteBuilder" class="kr.co.bizframe.esb.camel.monitoring.MonitoringRouteBuilder"/>
+   	<!-- monitoring -->
+	
+	<bean id="jetty" class="org.apache.camel.component.jetty9.JettyHttpComponent9">
+	</bean>
+
+
+ 	<camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
+
+  	    <!-- monitoring -->
+	    <routeBuilder ref="monitoringRouteBuilder"/>				
+	    <!-- monitoring -->
+
+	    <threadPoolProfile id="exReceivePool" poolSize="3" maxPoolSize="5" maxQueueSize="10" keepAliveTime="30000" />
+	    
+		<route id="exserver_worker">
+		  <!-- <from uri="file:/home/exserver/data/recv?recursive=true&amp;maxDepth=4&amp;move=done&amp;moveFailed=fail&amp;readLock=markerFile&amp;readLockTimeout=300000&amp;delay=2000"/>
+		  -->
+		  <from uri="file:/home/exserver/data/recv?move=done&amp;moveFailed=fail&amp;readLock=markerFile&amp;delay=2000&amp;sortBy=file:modified&amp;eagerMaxMessagesPerPoll=false&amp;maxMessagesPerPoll=3"/>
+		  <threads executorServiceRef="exReceivePool">
+		  	<to uri="exlink:recv?fileFormat=json"/>
+		  </threads>
+	    </route>
+	</camelContext>
+
+ </beans>

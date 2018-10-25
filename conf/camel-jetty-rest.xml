@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+    ">
+
+	<!-- monitoring -->
+   	<bean id="monitoringRouteBuilder" class="kr.co.bizframe.esb.camel.monitoring.MonitoringRouteBuilder"/>
+   	<!-- monitoring -->
+
+	<bean id="config" class="kr.co.bizframe.exlink.ExlinkConfig">
+		<property name="mapDir">
+			<value>/home/exserver/data/conf</value>
+		</property>
+		<property name="dsFilename">
+			<value>jdbc_ds_exhub.xml</value>
+		</property>	
+	</bean>
+	<!-- rest service define -->
+	<bean id="exlinkService" class="kr.co.bizframe.exlink.rest.RestJsonService" />
+	<!-- the security handler -->
+	<!-- <bean id="securityHandler" class="kr.co.bizframe.exlink.test.rest.JettySecurity" 
+		factory-method="createSecurityHandler"/> -->
+
+	<camelContext id="exlink-rest" xmlns="http://camel.apache.org/schema/spring">
+		<!-- monitoring -->
+		<routeBuilder ref="monitoringRouteBuilder"/>				
+		<!-- monitoring -->	
+
+         	<!-- configure rest-dsl to use jetty component and run on port 8080 -->
+		<restConfiguration component="jetty" port="8888">
+			<!-- use a smaller thread pool in jetty as we do not have so high demand yet -->
+			<componentProperty key="minThread" value="5" />
+			<componentProperty key="maxThread" value="8" />
+		</restConfiguration>
+
+		<!-- rest services under the orders context-path -->
+		<rest path="/exlink">			
+			<post id="exlink-rest-ca" uri="/ca" consumes="text/plain" produces="text/plain">
+				<to uri="bean:exlinkService?method=serviceCA" />
+			</post>
+			<post id="exlink-rest-other" uri="/other" consumes="text/plain" produces="text/plain">
+				<to uri="bean:exlinkService?method=serviceOther1" />			
+			</post>
+			<!-- <post> <to uri="bean:orderService?method=selectCarNo"/> </post> <put> 
+				<to uri="bean:orderService?method=updateOrder"/> </put> <delete uri="{id}"> 
+				<to uri="bean:orderService?method=cancelOrder(${header.id})"/> </delete> -->
+		</rest>	
+	</camelContext>
+
+</beans>

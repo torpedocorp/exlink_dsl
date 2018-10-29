@@ -21,7 +21,7 @@ exlink_dsl을 이용하여 camel기반 ESB로 수신한 데이터를 설정 파�
 
  1. jdk 8 이상 설치 
  2. apache ant 설치
- 3. exlink_dsl 프로젝트 저장소에서 소스를 clone 혹은 다운르도 (https://github.com/torpedocorp/esb-mng-console)
+ 3. exlink_dsl 프로젝트 저장소에서 소스를 clone 혹은 다운르도 (https://github.com/torpedocorp/exlink_dsl)
  4. 커맨드 라인상에서 ant build 수행
 
 ## Architecture

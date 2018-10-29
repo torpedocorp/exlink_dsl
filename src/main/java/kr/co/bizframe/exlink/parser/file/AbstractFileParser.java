@@ -73,6 +73,7 @@ public abstract class AbstractFileParser {
 
 	protected void addDataToParseInfo(LinkedHashMap<String ,ArrayList<LinkedHashMap<String, Object>>> parseInfo, LinkedHashMap<String, Object> dataMap, String key){
 		ArrayList<LinkedHashMap<String, Object>> value = parseInfo.get(key);
+		
 		if(value == null){
 			value = new ArrayList<LinkedHashMap<String, Object>>();
 			value.add(dataMap);

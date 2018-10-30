@@ -1,6 +1,7 @@
 package kr.co.bizframe.exlink.parser.file;
 
 import java.io.File;
+
 import java.io.UnsupportedEncodingException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -73,7 +74,6 @@ public abstract class AbstractFileParser {
 
 	protected void addDataToParseInfo(LinkedHashMap<String ,ArrayList<LinkedHashMap<String, Object>>> parseInfo, LinkedHashMap<String, Object> dataMap, String key){
 		ArrayList<LinkedHashMap<String, Object>> value = parseInfo.get(key);
-		
 		if(value == null){
 			value = new ArrayList<LinkedHashMap<String, Object>>();
 			value.add(dataMap);

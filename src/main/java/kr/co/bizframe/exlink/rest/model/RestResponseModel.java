@@ -12,6 +12,7 @@ import kr.co.bizframe.exlink.type.InterfaceType;
 public class RestResponseModel {
 	
 	private InterfaceType interfaceType;
+	private String  loadServiceName;
 	private String fileId;
 	private Date createdOn = new Date();
 	private Object dataObject;
@@ -52,6 +53,19 @@ public class RestResponseModel {
 	
 	public Date getCreatedOn() {
 		return createdOn;
+	}
+
+
+	public String getLoadServiceName() {
+		return loadServiceName;
+	}
+
+	public void setLoadServiceName(String loadServiceName) {
+		this.loadServiceName = loadServiceName;
+	}
+
+	public void setCreatedOn(Date createdOn) {
+		this.createdOn = createdOn;
 	}
 
 	public RestResponseModel jsonToObject(String resMessage){

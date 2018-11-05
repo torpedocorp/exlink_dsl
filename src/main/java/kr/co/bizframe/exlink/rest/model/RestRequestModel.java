@@ -11,6 +11,7 @@ import kr.co.bizframe.exlink.type.InterfaceType;
 public class RestRequestModel {
 	
 	private InterfaceType interfaceType;
+	private String  loadServiceName;
 	private String fileId;
 	private Date createdOn = new Date();
 	private Object dataObject;
@@ -66,5 +67,15 @@ public class RestRequestModel {
 		String data = gson.toJson(this);
 		return data;
 	}
+
+	public String getLoadServiceName() {
+		return loadServiceName;
+	}
+
+	public void setLoadServiceName(String loadServiceName) {
+		this.loadServiceName = loadServiceName;
+	}
+
+	
 
 }

@@ -1,6 +1,6 @@
 # esb-mng-console
 
-exlink_dsl은 camel 기반의 ESB의 db to file 및  file to db로  데이터를 이관할 수 있는  coustom component 입니다. 
+exlink_dsl은 camel 기반의 ESB의 db to file 및  file to db로  데이터를 이관할 수 있는  custom component 입니다. 
 <!--more-->
 
 exlink_dsl을 이용하여 camel기반 ESB로 수신한 데이터를 설정 파일 기반으로 효과적으로 변환 및 저장 처리 할 수 있습니다. 

@@ -125,7 +125,7 @@ public class MakeCreateTableScript {
 		try{
 			String scriptDir = "misc/mapScript";
 			String sqlDir = "misc/mapSql";
-			String dsFilename =  "jdbc_ds_exclient.xml";
+			String dsFilename =  "jdbc_ds_exserver.xml";
 			MakeCreateTableScript mcts = new MakeCreateTableScript();
 			mcts.makeCreateTableScirpt(scriptDir, sqlDir, dsFilename);
 			mcts.runSql(sqlDir, dsFilename);

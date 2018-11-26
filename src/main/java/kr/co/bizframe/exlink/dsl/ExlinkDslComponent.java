@@ -18,6 +18,7 @@ package kr.co.bizframe.exlink.dsl;
 
 import java.util.Map;
 
+
 import kr.co.bizframe.exlink.ExlinkConfig;
 import kr.co.bizframe.exlink.parser.conf.FileParserConfingFactory;
 
@@ -40,12 +41,8 @@ public class ExlinkDslComponent extends DefaultComponent {
     	logger.debug("remaining="+remaining);
     	logger.debug("parameters="+parameters);
     	
-//    	
     	ExlinkDslEndpoint endpoint = new ExlinkDslEndpoint(uri, this);
     	endpoint.setWorkType(remaining);
-//    	endpoint.setMapConfDir((String)parameters.get(ExLinkOptionType.mapConfDir.getCode()));
-//    	endpoint.setGenerateFormat((String)parameters.get(ExLinkOptionType.generateFormat.getCode()));
-//    	endpoint.setGenerateDir((String)parameters.get(ExLinkOptionType.generateDir.getCode()));
         setProperties(endpoint, parameters);
         logger.debug("endpoint info ="+endpoint.toString());
         FileParserConfingFactory.getInstance().init(ExlinkConfig.getMapDir(),ExlinkConfig.getDsFilename());

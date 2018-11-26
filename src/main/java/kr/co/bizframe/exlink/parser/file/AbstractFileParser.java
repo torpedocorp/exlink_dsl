@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractFileParser {
 
 	public static Logger logger = LoggerFactory.getLogger(AbstractFileParser.class);
-	private final static int MAX_ACTIVE_THREAD = 100;
+	private final static int MAX_ACTIVE_THREAD = 10;
 //	private final static ExecutorService executorService = Executors.newFixedThreadPool(MAX_ACTIVE_THREAD);
 	private static BlockingQueue<Runnable> blockingQueue = new ArrayBlockingQueue<Runnable>(MAX_ACTIVE_THREAD*5);
     private static ThreadPoolExecutor  executorService = new ThreadPoolExecutor (10, MAX_ACTIVE_THREAD, 60000, TimeUnit.MILLISECONDS, blockingQueue);
@@ -153,11 +153,29 @@ public abstract class AbstractFileParser {
 		}
 	}
 	
+	private void getExFileInfo(ExFileInfo info, File file){
+		String fileName = file.getName();
+		String[] list = fileName.split("_");
+
+		info.setDataFile(file);
+		info.setJobCode(list[0].substring(0, 1));
+		info.setBrenchCode(list[0].substring(1, 5));
+		info.setMmdd(list[0].substring(5, 9));
+		info.setHhmm(list[0].substring(9, 13));
+		info.setFileId(list[0].substring(13, 16));
+
+		info.setSystemCode(list[1].substring(0, 2));
+		info.setSendCode(list[1].substring(2, 6));
+		info.setRecvCode(list[1].substring(6, 10));
+
+		info.setInterfaceId(list[2]);
+		info.setFileSeq(list[3]);
+	}
+	
 	public void process(File file) throws ExlinkDslException{
 		long filesize = file.length();
 		boolean isWriteComplete = false;
 		while(!isWriteComplete){
-			
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -165,30 +183,14 @@ public abstract class AbstractFileParser {
 				e.printStackTrace();
 			}
 			long tempsize =  file.length();
-			logger.debug("★★★★★★★★★★★★★★★★★★★★★★ check file wrting ★★★★★★★★★★★★★★★"+tempsize);
 			if(filesize == tempsize) isWriteComplete = true;
 			filesize = tempsize;
 		}
 		ExFileInfo info = new ExFileInfo();
 		String fileName = file.getName();
 		long startTime = System.currentTimeMillis();
-//		logger.debug("file name length="+fileName.length());
 		if(fileName.length() == 44){
-			String[] list = fileName.split("_");
-
-			info.setDataFile(file);
-			info.setJobCode(list[0].substring(0, 1));
-			info.setBrenchCode(list[0].substring(1, 5));
-			info.setMmdd(list[0].substring(5, 9));
-			info.setHhmm(list[0].substring(9, 13));
-			info.setFileId(list[0].substring(13, 16));
-
-			info.setSystemCode(list[1].substring(0, 2));
-			info.setSendCode(list[1].substring(2, 6));
-			info.setRecvCode(list[1].substring(6, 10));
-
-			info.setInterfaceId(list[2]);
-			info.setFileSeq(list[3]);
+			getExFileInfo(info, file);
 			logger.info("■■■■■■■■■■■ The file ["+file.getName()+"] start paring "+(double) file.length()/(1024*1024)+" mb");
 
 			FileParserMetaConf metaConf = FileParserConfingFactory.getInstance().getMetaConf(InterfaceType.getTypeById(info.getInterfaceId()));
@@ -197,10 +199,6 @@ public abstract class AbstractFileParser {
 			long parsingendTime = System.currentTimeMillis();
 			logger.info("■■■■■■■■■■■ The file ["+file.getName()+"] parsing time ="+(parsingendTime-startTime));
 
-			/*
-			 * meta adaptor execute
-			 */
-			logger.info("metaConf.getPostMetaAdaptor() ="+metaConf.getPostMetaAdaptor());
 			if(metaConf.getPostMetaAdaptor() != null ||  !metaConf.getPostMetaAdaptor().equals("")){
 				postMetaProcess(metaConf, metaData, info);
 			}

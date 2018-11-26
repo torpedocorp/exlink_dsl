@@ -36,15 +36,8 @@ public class DefaultLogMetaAdaptor extends AbstractPostMetaAdaptor{
 			FileParserMapConfInfo fMapInfo = metaConf.getMapConfByMapKey((String)key);
 			int keyCount = mapDatas.size();
 			totalRowCount = totalRowCount + keyCount;
-			//logger.debug("▶▶▶▶▶▶▶▶▶ key="+key+" key row count=["+keyCount+"]  total row count=["+totalRowCount+"]");
+			logger.debug("▶▶▶▶▶▶▶▶▶ key="+key+" key row count=["+keyCount+"]  total row count=["+totalRowCount+"]");
 		}
 	}
-
-
-	
-	
-	
-	
-	
 	
 }

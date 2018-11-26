@@ -26,9 +26,7 @@ import org.apache.camel.impl.ScheduledPollConsumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * The HelloWorld consumer.
- */
+
 public class ExlinkDslConsumerPoll extends ScheduledPollConsumer {
     private final ExlinkDslEndpoint endpoint;
 
@@ -55,7 +53,6 @@ public class ExlinkDslConsumerPoll extends ScheduledPollConsumer {
             getProcessor().process(exchange);
             return 1; // number of messages polled
         } finally {
-            // log exception if an exception occurred and was not handled
             if (exchange.getException() != null) {
                 getExceptionHandler().handleException("Error processing exchange", exchange, exchange.getException());
             }

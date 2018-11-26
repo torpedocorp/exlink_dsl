@@ -32,9 +32,6 @@ import org.apache.camel.impl.DefaultProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * The HelloWorld producer.
- */
 public class ExlinkDslProducer extends DefaultProducer {
     
 	public static Logger logger = LoggerFactory.getLogger(DefaultProducer.class);
@@ -57,8 +54,6 @@ public class ExlinkDslProducer extends DefaultProducer {
     public void process(Exchange exchange) throws Exception {
     	logger.debug("■■■■■■■■■■■■■■■■■■■■■■■■ ExlinkDslProducer start");
     	logger.debug("■"+endpoint.getEndpointUri());
-//    	logger.debug("■"+exchange.getIn().getBody());
-//    	logger.debug("■"+exchange.getIn().getHeaders());
     	String filepath = (String) exchange.getIn().getHeaders().get("CamelFileAbsolutePath");
     	logger.debug("■ parsing file="+filepath);
     	File file = new File(filepath);
